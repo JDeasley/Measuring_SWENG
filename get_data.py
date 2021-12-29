@@ -18,7 +18,7 @@ def get_user():
 
     return usr
 
-def get_fake_user(name):
+def get_named_user(name):
     try:
         usr = g.get_user(name)
     except Exception:
