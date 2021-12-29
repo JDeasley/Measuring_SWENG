@@ -8,7 +8,7 @@ fake = defaultdict(faker.name)
 
 token = os.getenv('GITHUB_PAT')
 g = Github(token)
-usr = None
+# usr = None
 
 def get_user():
     try:
@@ -44,3 +44,11 @@ def create_user_dict(user):
         dct = None
 
     return dct
+
+def get_named_repo(repo_name):
+    try:
+        repo = g.get_repo(repo_name)
+    except Exception:
+        repo = None
+
+    return repo
