@@ -5,9 +5,6 @@ token = os.getenv('GITHUB_PAT')
 g = Github(token)
 usr = None
 
-def get_real_user(self):
+def get_user():
     usr = g.get_user()
     return g
-
-
-
