@@ -25,3 +25,16 @@ class test_get_data(unittest.TestCase):
 
         self.assertIsNotNone(repo1)
         self.assertIsNone(repo2)
+
+    def test_repo_dict(self):
+        repo1 = get_data.get_named_repo("torvalds/linux")
+        repo2 = get_data.get_named_repo("not_a_real_user/fake_repo")
+
+        dct1 = get_data.create_repo_dict(repo1)
+        dct2 = get_data.create_repo_dict(repo2)
+
+        self.assertIsNotNone(dct1)
+        self.assertIsNone(dct2)
+
+        for _, v in dict(dct1).items():
+            self.assertIsNotNone(v)
