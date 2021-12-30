@@ -38,3 +38,10 @@ class test_get_data(unittest.TestCase):
 
         for _, v in dict(dct1).items():
             self.assertIsNotNone(v)
+
+    def test_top_contributors(self):
+        repo1 = get_data.get_named_repo("torvalds/linux")
+
+        contributors = get_data.get_top_contributors(repo1)
+
+        self.assertIsNotNone(contributors)
