@@ -40,8 +40,19 @@ class test_get_data(unittest.TestCase):
             self.assertIsNotNone(v)
 
     def test_top_contributors(self):
-        repo1 = get_data.get_named_repo("torvalds/linux")
+        repo1 = get_data.get_named_repo("JDeasley/Measuring_SWENG_Visualisation")
+        repo2 = get_data.get_named_repo("not_a_real_user/fake_repo")
 
-        contributors = get_data.get_top_contributors(repo1)
+        cons1 = get_data.get_top_contributors(repo1)
+        cons2 = get_data.get_top_contributors(repo2)
 
-        self.assertIsNotNone(contributors)
+        self.assertNotEqual([], cons1)
+        self.assertEqual([], cons2)
+        
+        count = 0
+
+        for _ in cons1:
+            count += 1
+
+        self.assertEquals(1, count)
+        
