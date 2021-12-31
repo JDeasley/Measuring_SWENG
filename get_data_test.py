@@ -65,4 +65,13 @@ class test_get_data(unittest.TestCase):
         # 2325298 is the id of the "torvalds/linux" repo, which I have never contributed to.
         self.assertFalse(2325298 in commits1.keys())
 
+    def test_user_file_count(self):
+        files1 = get_data.get_user_file_count("JDeasley")
+
+        # I have commited a few Python files to GitHub
+        self.assertTrue("py" in files1.keys())
+        self.assertGreaterEqual(files1.get("py"), 3)
+        # I have never commited C files to GitHub
+        self.assertFalse("c" in files1.keys())
+
         
