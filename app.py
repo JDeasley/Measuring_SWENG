@@ -5,7 +5,7 @@ import json
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
-def get_data():
+def fetch_data():
     f = open('data.json')
     rdata = json.load(f)
 
@@ -17,6 +17,6 @@ def index():
 
 @app.route("/repo/<path:repo_name>")
 def show_repo(repo_name):
-    data = get_data()
+    data = fetch_data()
     first_user = data[0]["user"]
     return render_template("test.html", **locals())
