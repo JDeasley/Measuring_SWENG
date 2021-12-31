@@ -55,4 +55,14 @@ class test_get_data(unittest.TestCase):
             count += 1
 
         self.assertEquals(1, count)
+        self.assertEquals("JDeasley", cons1[0])
+
+    def test_users_commits(self):
+        commits1 = get_data.get_users_commits("JDeasley")
+        
+        # 434433749 is the id of the repo containing this project
+        self.assertTrue(434433749 in commits1.keys())
+        # 2325298 is the id of the "torvalds/linux" repo, which I have never contributed to.
+        self.assertFalse(2325298 in commits1.keys())
+
         
