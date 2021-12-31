@@ -110,4 +110,20 @@ def get_users_commits(name):
     # Should now have a dict of repo IDs and the commits the user made to each of those repos
     return commits
 
+def get_user_file_count(name):
+    commits = get_users_commits(name)
+    file_count = defaultdict(int)
+
+    for repo_id in commits.keys():
+            repo = get_named_repo(repo_id)
+
+            for commit_id in commits.get(repo_id):
+                commit = repo.get_commit(commit_id)
+
+                for file in commit.files:
+                    _, file_type = file.filename.split(".")
+                    file_count[file_type] += 1
+
+    return file_count
+
 
