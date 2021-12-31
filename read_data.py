@@ -12,15 +12,24 @@ client = pymongo.MongoClient(conn)
 db = client.classDB
 # data = db.githubdata.find()
 
-# with open('data.json', 'w') as f:
-    # f.write('User,Count\n')
-print("Accessing DB...")
-dct = db.githubdata.find()
+with open('data.json', 'w') as f:
+    print("Accessing DB...")
+    dct = db.githubdata.find()
 
-print("Done:")
-# pprint.pprint(dct)
+    print("Done:")
+    # pprint.pprint(dct)
 
-for user in dct:
-    pprint.pprint(user)
-    print()
-        # f.write(user['user'] + ',' + str(user['public_repos']) + '\n')
+    u_list = []
+
+    for user in dct:
+        name = user['user']
+        files = user['files']
+
+        new = {
+            "user": name,
+            "files": files
+        }
+        u_list.append(new)
+
+    if u_list:
+        json.dump(u_list, f)

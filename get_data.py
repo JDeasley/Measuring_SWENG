@@ -16,7 +16,7 @@ client = pymongo.MongoClient(conn)
 
 db = client.classDB
 
-img_extensions = [".png", ".jpg", ".jpeg", ".svg", ".gif", ".ico"]
+img_extensions = ["png", "jpg", "jpeg", "svg", "gif", "ico"]
 
 def get_user():
     try:
@@ -161,9 +161,10 @@ def main():
         }
         print(dct)
         counts.append(dct)
+        db.githubdata.insert_many([dct])
     
     print(counts)
-    db.githubdata.insert_many(counts)
+    
 
 main()
 
