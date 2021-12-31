@@ -40,11 +40,11 @@ class test_get_data(unittest.TestCase):
             self.assertIsNotNone(v)
 
     def test_top_contributors(self):
-        repo1 = get_data.get_named_repo("JDeasley/Measuring_SWENG_Visualisation")
-        repo2 = get_data.get_named_repo("not_a_real_user/fake_repo")
+        # repo1 = get_data.get_named_repo("JDeasley/Measuring_SWENG_Visualisation")
+        # repo2 = get_data.get_named_repo("not_a_real_user/fake_repo")
 
-        cons1 = get_data.get_top_contributors(repo1)
-        cons2 = get_data.get_top_contributors(repo2)
+        cons1 = get_data.get_top_contributors("JDeasley/Measuring_SWENG_Visualisation")
+        cons2 = get_data.get_top_contributors("not_a_real_user/fake_repo")
 
         self.assertNotEqual([], cons1)
         self.assertEqual([], cons2)
