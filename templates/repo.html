@@ -1,0 +1,151 @@
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>Repo: {{ repo_name }}</title>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand">Repo: {{ repo_name }}</a>
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search Repo" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+
+    <!-- <h1>Repo: {{ repo_name }}</h1> -->
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    {% for user in data %}
+        <a href="/">
+            {{ user["user"] }}
+        </a><br/>
+    {% endfor %}
+
+    <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for user in data %}
+                {% if user["user"] == first_user %}
+                    <div class="carousel-item active">
+                        <p>Language usage by user: {{ user["user"] }}</p>
+                        <div id={{ user["user"] }} style="width: 900px; height: 500px;">
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="carousel-item">
+                        <p>Language usage by user: {{ user["user"] }}</p>
+                        <div id={{ user["user"] }} style="width: 900px; height: 500px;">
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+
+          <!-- <div class="carousel-item active">
+            <p>Language usage by user: {{ data[0]["user"] }}</p>
+            <div id="chart_div" style="width: 900px; height: 500px;">
+            </div>
+          </div>
+          <div class="carousel-item">
+            <p>Language usage by user: {{ data[0]["user"] }}</p>
+            <div id="chart_div" style="width: 900px; height: 500px;">
+            </div>
+          </div>
+          <div class="carousel-item">
+            <p>Language usage by user: {{ data[0]["user"] }}</p>
+            <div id="chart_div" style="width: 900px; height: 500px;">
+            </div>
+          </div> -->
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+    
+
+    <script type="text/javascript">//<![CDATA[ 
+
+    google.load('visualization', '1', {packages: ['corechart', 'bar']});
+    google.setOnLoadCallback(drawBasic);
+
+    function drawBasic() {
+
+        const tableDict = new Map()
+        var table = null
+        
+        {% for user in data %}
+            
+            console.log("{{ user["user"] }}")
+
+            myArray = [['Language', 'Number']]
+
+            {% for filetype in user["files"].keys() %}
+
+                myArray.push(
+                    ['{{ filetype }}', {{ user["files"][filetype] }}]
+                )
+
+            {% endfor %}
+
+            table = google.visualization.arrayToDataTable(myArray);
+
+            // table = google.visualization.arrayToDataTable([
+            //     ['Language',    'Number'],
+            //     ['Python',      {{ user["files"]["py"] }}],
+            //     ['JavaScript',  {{ user["files"]["js"] }}],
+            //     ['Java',        {{ user["files"]["java"] }}]
+            // ]);
+
+            tableDict.set("{{ user["user"] }}", table)
+
+        {% endfor %}
+
+        // var table = google.visualization.arrayToDataTable([
+        //     ['Language',    'Number'],
+        //     ['Python',      {{ data[0]["files"]["py"] }}],
+        //     ['JavaScript',  {{ data[0]["files"]["js"] }}],
+        //     ['Java',        {{ data[0]["files"]["java"] }}]
+        // ]);
+        
+        // var data = google.visualization.arrayToDataTable([
+        //     ['Currency', 'Rate', { role: 'style' }],
+        //     ['USD', 1.2, 'gold'],
+        //     ['GBP', 0.9, 'silver'],
+        //     ['HKD', 1.5, 'brown'],
+        //     ['AUD', 1.4, 'blue']
+        // ]);
+
+        var options = {
+            height: 500,
+            width: 900,
+            pieHole: 0.4,
+            sliceVisibilityThreshold: .02,
+            pieSliceText: 'label',
+            pieResidueSliceLabel: 'others'
+        };
+
+        var name = ""
+
+        {% for user in data %}
+
+            name = "{{ user["user"] }}"
+            console.log(name)
+            var chart{{ user["user"] }} = new google.visualization.PieChart(document.getElementById( name ));
+            chart{{ user["user"] }}.draw(tableDict.get(name), options);
+
+        {% endfor %}
+
+        // name = "{{ data[0]["user"] }}"
+        // var chart = new google.visualization.PieChart(document.getElementById( name ));
+        // chart.draw(table, options);
+    }
+    </script>
+</body>
