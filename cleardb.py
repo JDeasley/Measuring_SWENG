@@ -6,7 +6,12 @@ import pymongo
 conn = "mongodb://localhost:27017"
 client = pymongo.MongoClient(conn)
 
-# Create a database
-db = client.classDB
+def main():
+    # Create a database
+    db = client.classDB
 
-db.githubdata.delete_many({})
+    print("Clearing database...")
+    db.githubdata.delete_many({})
+
+if __name__ == '__main__':
+    main()
