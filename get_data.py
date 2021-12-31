@@ -147,24 +147,24 @@ def get_user_file_count(name):
     return file_count
 
 
-def main():
-    repo_name = "folafifo/Group8OAC"
+def fetch(repo_name="folafifo/Group8OAC"):
+    # repo_name = "folafifo/Group8OAC"
+    print("Starting 'fetch' function...")
     top_cons = get_top_contributors(repo_name)
     # file_counts = defaultdict(list)
-    counts = []
 
     for c in top_cons:
-        # file_counts[c] = get_user_file_count(c)
         dct = {
             'user':     c,
             'files':    get_user_file_count(c)
         }
         print(dct)
-        counts.append(dct)
+
         db.githubdata.insert_many([dct])
     
-    print(counts)
-    
+def main():
+    fetch()
 
-main()
+if __name__ == '__main__':
+    main()
 
