@@ -126,23 +126,28 @@ def get_user_file_count(name):
     commits = get_users_commits(name)
     file_count = defaultdict(int)
 
-    for repo_id in commits.keys():
-            repo = get_named_repo(repo_id)
+    try:
 
-            for commit_id in commits.get(repo_id):
-                commit = repo.get_commit(commit_id)
-                
-                for file in commit.files:
-                    try:
-                        _, file_type = os.path.splitext(file.filename)
-                        file_type = file_type.removeprefix(".")
-                        
-                    except Exception:
-                        print("Issue with file - ", file.filename, " - in repo - ", repo.full_name)
-                        _, _, file_type = file.filename.split(".")
-                        
-                    if not file_type == '' and not file_type in img_extensions:
-                        file_count[file_type] += 1
+        for repo_id in commits.keys():
+                repo = get_named_repo(repo_id)
+
+                for commit_id in commits.get(repo_id):
+                    commit = repo.get_commit(commit_id)
+                    
+                    for file in commit.files:
+                        try:
+                            _, file_type = os.path.splitext(file.filename)
+                            file_type = file_type.removeprefix(".")
+                            
+                        except Exception:
+                            print("Issue with file - ", file.filename, " - in repo - ", repo.full_name)
+                            _, _, file_type = file.filename.split(".")
+                            
+                        if not file_type == '' and not file_type in img_extensions:
+                            file_count[file_type] += 1
+
+    except Exception as e:
+        print(e)
 
     return file_count
 
