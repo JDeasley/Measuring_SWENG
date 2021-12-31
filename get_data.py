@@ -1,5 +1,7 @@
 from github import Github
 import os
+import pymongo
+import json
 
 from faker import Faker
 from collections import defaultdict
@@ -9,6 +11,13 @@ fake = defaultdict(faker.name)
 token = os.getenv('GITHUB_PAT')
 g = Github(token)
 # usr = None
+
+conn = "mongodb://localhost:27017"
+client = pymongo.MongoClient(conn)
+
+db = client.classDB
+
+img_extensions = [".png", ".jpg", ".jpeg", ".svg", ".gif", ".ico"]
 
 def get_user():
     try:
@@ -72,18 +81,21 @@ def create_repo_dict(repo):
 
     return dct
 
-def get_top_contributors(repo):
+def get_top_contributors(repo_name):
+    repo = get_named_repo(repo_name)
     c_list = []
     
     try:
         contributors = repo.get_contributors()
 
         for c in contributors:
+            print(c.login)
             c_list.append(c.login)
             if len(c_list) >= 10:
                 break
     
     except Exception:
+        print("List of contirbutors too large for API...")
         return []
 
     return c_list
@@ -101,11 +113,12 @@ def get_users_commits(name):
         try:
             for commit in event.payload.get("commits"):
                 sha = commit.get("sha")
-                print(f"Found commit {sha} in repo {repo_id}")
+                # print(f"Found commit {sha} in repo {repo_id}")
                 commits[repo_id].append(sha)
         
         except Exception:
-            print("No commits in this event")
+            # print("No commits in this event")
+            continue
 
     # Should now have a dict of repo IDs and the commits the user made to each of those repos
     return commits
@@ -119,11 +132,39 @@ def get_user_file_count(name):
 
             for commit_id in commits.get(repo_id):
                 commit = repo.get_commit(commit_id)
-
+                
                 for file in commit.files:
-                    _, file_type = file.filename.split(".")
-                    file_count[file_type] += 1
+                    try:
+                        _, file_type = os.path.splitext(file.filename)
+                        file_type = file_type.removeprefix(".")
+                        
+                    except Exception:
+                        print("Issue with file - ", file.filename, " - in repo - ", repo.full_name)
+                        _, _, file_type = file.filename.split(".")
+                        
+                    if not file_type == '' and not file_type in img_extensions:
+                        file_count[file_type] += 1
 
     return file_count
 
+
+def main():
+    repo_name = "folafifo/Group8OAC"
+    top_cons = get_top_contributors(repo_name)
+    # file_counts = defaultdict(list)
+    counts = []
+
+    for c in top_cons:
+        # file_counts[c] = get_user_file_count(c)
+        dct = {
+            'user':     c,
+            'files':    get_user_file_count(c)
+        }
+        print(dct)
+        counts.append(dct)
+    
+    print(counts)
+    db.githubdata.insert_many(counts)
+
+main()
 
