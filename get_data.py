@@ -1,7 +1,6 @@
 from github import Github
 import os
 import pymongo
-import json
 
 from faker import Faker
 from collections import defaultdict
