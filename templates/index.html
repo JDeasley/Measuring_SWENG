@@ -8,12 +8,10 @@
         event.preventDefault()
 
         let repo = document.getElementById("repoSearch").value
-        // alert(repo)
         let new_url = '{{ url_for('show_repo', repo_name=repo) }}'.concat(repo)
-        alert(new_url)
-        document.getElementById("loader").toggleAttribute("hidden")
+        document.getElementById("loader").removeAttribute("hidden")
         window.location.href = new_url
-        document.getElementById("loader").toggleAttribute("hidden")
+        document.getElementById("loader").setAttribute("hidden")
       }
     </script>
     
