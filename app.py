@@ -6,6 +6,7 @@ import get_data, cleardb, read_data
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 repos_fetched = []
+cleardb.main()
 
 def fetch_data(repo_name):
     if repo_name in repos_fetched:
@@ -24,7 +25,6 @@ def fetch_data(repo_name):
 
 @app.route("/")
 def index():
-    cleardb.main()
     return render_template("index.html")
 
 @app.route("/repo/<path:repo_name>")
