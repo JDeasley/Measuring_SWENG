@@ -16,15 +16,15 @@ client = pymongo.MongoClient(conn)
 
 db = client.classDB
 
-img_extensions = ["png", "jpg", "jpeg", "svg", "gif", "ico"]
+not_useful_extensions = ["class", "md", "png", "PNG", "jpg", "JPG", "jpeg", "svg", "gif", "ico"]
 
-def get_user():
-    try:
-        usr = g.get_user()
-    except Exception:
-        usr = None
+# def get_user():
+#     try:
+#         usr = g.get_user()
+#     except Exception:
+#         usr = None
 
-    return usr
+#     return usr
 
 def get_named_user(name):
     try:
@@ -34,24 +34,24 @@ def get_named_user(name):
 
     return usr
 
-def create_user_dict(user):
-    try:
-        dct = {
-            'user':         fake[user.login].replace(" ",""),
-            'fullname':     fake[user.name],
-            'location':     user.location,
-            'company':      user.company,
-            'public_repos': user.public_repos
-        }
+# def create_user_dict(user):
+#     try:
+#         dct = {
+#             'user':         fake[user.login].replace(" ",""),
+#             'fullname':     fake[user.name],
+#             'location':     user.location,
+#             'company':      user.company,
+#             'public_repos': user.public_repos
+#         }
 
-        for k, v in dict(dct).items():
-            if v is None:
-                del dct[k]
+#         for k, v in dict(dct).items():
+#             if v is None:
+#                 del dct[k]
     
-    except Exception:
-        dct = None
+#     except Exception:
+#         dct = None
 
-    return dct
+#     return dct
 
 def get_named_repo(repo_name):
     try:
@@ -61,24 +61,24 @@ def get_named_repo(repo_name):
 
     return repo
 
-def create_repo_dict(repo):
-    try:
-        dct = {
-            'name':         repo.name,
-            'owner':        fake[repo.owner.login].replace(" ",""),
-            'description':  repo.description,
-            'stars':        repo.stargazers_count,
-            'forks':        repo.forks_count,
-        }
+# def create_repo_dict(repo):
+#     try:
+#         dct = {
+#             'name':         repo.name,
+#             'owner':        fake[repo.owner.login].replace(" ",""),
+#             'description':  repo.description,
+#             'stars':        repo.stargazers_count,
+#             'forks':        repo.forks_count,
+#         }
 
-        for k, v in dict(dct).items():
-            if v is None:
-                del dct[k]
+#         for k, v in dict(dct).items():
+#             if v is None:
+#                 del dct[k]
     
-    except Exception:
-        dct = None
+#     except Exception:
+#         dct = None
 
-    return dct
+#     return dct
 
 def get_top_contributors(repo_name):
     repo = get_named_repo(repo_name)
@@ -107,16 +107,19 @@ def get_users_commits(name):
 
     # For each event, get repo ID and commit IDs (SHAs)
     for event in events:
-        repo_id = event.repo.id
+        if event.type == "PushEvent":
+            repo_id = event.repo.id
 
-        try:
-            for commit in event.payload.get("commits"):
-                sha = commit.get("sha")
-                # print(f"Found commit {sha} in repo {repo_id}")
-                commits[repo_id].append(sha)
-        
-        except Exception:
-            # print("No commits in this event")
+            try:
+                for commit in event.payload.get("commits"):
+                    sha = commit.get("sha")
+                    # print(f"Found commit {sha} in repo {repo_id}")
+                    commits[repo_id].append(sha)
+            
+            except Exception:
+                # print("No commits in this event")
+                continue
+        else:
             continue
 
     # Should now have a dict of repo IDs and the commits the user made to each of those repos
@@ -143,7 +146,7 @@ def get_user_file_count(name):
                             print("Issue with file - ", file.filename, " - in repo - ", repo.full_name)
                             _, _, file_type = file.filename.split(".")
                             
-                        if not file_type == '' and not file_type in img_extensions:
+                        if not file_type == '' and not file_type in not_useful_extensions:
                             file_count[file_type] += 1
 
     except Exception as e:
