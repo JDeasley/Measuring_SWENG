@@ -17,9 +17,14 @@ def db_fetch(repo_name="folafifo/Group8OAC"):
     # with open('data.json', 'w') as f:
 
     top_cons = get_top_contributors(repo_name)
+    top_cons_names = []
 
-    print("Accessing DB...")
-    dct = db.githubdata.find({'user': {'$in': top_cons}})
+    for con in top_cons:
+        top_cons_names.append(con.login)
+
+    print("Accessing DB for users in list:")
+    print(top_cons_names)
+    dct = db.githubdata.find({'user': {'$in': top_cons_names}})
 
     print("Done:")
     # pprint.pprint(dct)

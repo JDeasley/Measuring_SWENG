@@ -17,6 +17,7 @@ client = pymongo.MongoClient(conn)
 db = client.classDB
 
 not_useful_extensions = ["class", "md", "png", "PNG", "jpg", "JPG", "jpeg", "svg", "gif", "ico"]
+users_fetched = []
 
 # def get_user():
 #     try:
@@ -89,7 +90,7 @@ def get_top_contributors(repo_name):
 
         for c in contributors:
             print(c.login)
-            c_list.append(c.login)
+            c_list.append(c)
             if len(c_list) >= 10:
                 break
     
@@ -99,9 +100,8 @@ def get_top_contributors(repo_name):
 
     return c_list
 
-def get_users_commits(name):
-    usr = get_named_user(name)
-    events = usr.get_events()
+def get_users_commits(user):
+    events = user.get_events()
 
     commits = defaultdict(list)
 
@@ -125,50 +125,59 @@ def get_users_commits(name):
     # Should now have a dict of repo IDs and the commits the user made to each of those repos
     return commits
 
-def get_user_file_count(name):
-    commits = get_users_commits(name)
+def get_user_file_count(user):
+    commits = get_users_commits(user)
     file_count = defaultdict(int)
 
-    try:
+    for repo_id in commits.keys():
+        try:
+            repo = get_named_repo(repo_id)
+            print(repo.full_name)
 
-        for repo_id in commits.keys():
-                repo = get_named_repo(repo_id)
+            for commit_id in commits.get(repo_id):
+                commit = repo.get_commit(commit_id)
+                
+                for file in commit.files:
+                    try:
+                        _, file_type = os.path.splitext(file.filename)
+                        file_type = file_type.removeprefix(".")
+                        
+                    except Exception:
+                        print("Issue with file - ", file.filename, " - in repo - ", repo.full_name)
+                        _, _, file_type = file.filename.split(".")
+                        
+                    if not file_type == '' and not file_type in not_useful_extensions:
+                        file_count[file_type] += 1
 
-                for commit_id in commits.get(repo_id):
-                    commit = repo.get_commit(commit_id)
-                    
-                    for file in commit.files:
-                        try:
-                            _, file_type = os.path.splitext(file.filename)
-                            file_type = file_type.removeprefix(".")
-                            
-                        except Exception:
-                            print("Issue with file - ", file.filename, " - in repo - ", repo.full_name)
-                            _, _, file_type = file.filename.split(".")
-                            
-                        if not file_type == '' and not file_type in not_useful_extensions:
-                            file_count[file_type] += 1
-
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print("Repo: ", repo_id, " - ", e)
 
     return file_count
 
 
 def fetch(repo_name="folafifo/Group8OAC"):
     # repo_name = "folafifo/Group8OAC"
-    print("Starting 'fetch' function...")
-    top_cons = get_top_contributors(repo_name)
+    print("Starting 'fetch' function...")#
+
+    try:
+        top_cons = get_top_contributors(repo_name)
+    except Exception as err:
+        raise err
     # file_counts = defaultdict(list)
 
     for c in top_cons:
-        dct = {
-            'user':     c,
-            'files':    get_user_file_count(c)
-        }
-        print(dct)
 
-        db.githubdata.insert_many([dct])
+        if c.login not in users_fetched:
+            dct = {
+                'user':     c.login,
+                'files':    get_user_file_count(c)
+            }
+            print(dct)
+        
+            users_fetched.append(c.login)
+            db.githubdata.insert_many([dct])
+        else:
+            print("Already fetched file count for: ", c.login)
     
 def main():
     fetch()

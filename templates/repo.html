@@ -32,134 +32,120 @@
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-    {% for user in data %}
-        <a href="/">
-            {{ user["user"] }}
-        </a><br/>
-    {% endfor %}
+    {% if not bad_repo %}
 
-    <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            {% for user in data %}
-                {% if user["user"] == first_user %}
-                    <div class="carousel-item active">
-                        <p>Language usage by user: {{ user["user"] }}</p>
-                        <div id={{ user["user"] }} style="width: 900px; height: 500px;">
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="carousel-item">
-                        <p>Language usage by user: {{ user["user"] }}</p>
-                        <div id={{ user["user"] }} style="width: 900px; height: 500px;">
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
+      {% for user in data %}
+          <a href="/">
+              {{ user["user"] }}
+          </a><br/>
+      {% endfor %}
 
-
-          <!-- <div class="carousel-item active">
-            <p>Language usage by user: {{ data[0]["user"] }}</p>
-            <div id="chart_div" style="width: 900px; height: 500px;">
-            </div>
+      <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+              {% for user in data %}
+                  {% if user["user"] == first_user %}
+                      <div class="carousel-item active">
+                          <p>Language usage by user: {{ user["user"] }}</p>
+                          <div id={{ user["user"] }} style="width: 900px; height: 500px;">
+                          </div>
+                      </div>
+                  {% else %}
+                      <div class="carousel-item">
+                          <p>Language usage by user: {{ user["user"] }}</p>
+                          <div id={{ user["user"] }} style="width: 900px; height: 500px;">
+                          </div>
+                      </div>
+                  {% endif %}
+              {% endfor %}
           </div>
-          <div class="carousel-item">
-            <p>Language usage by user: {{ data[0]["user"] }}</p>
-            <div id="chart_div" style="width: 900px; height: 500px;">
-            </div>
-          </div>
-          <div class="carousel-item">
-            <p>Language usage by user: {{ data[0]["user"] }}</p>
-            <div id="chart_div" style="width: 900px; height: 500px;">
-            </div>
-          </div> -->
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
       </div>
 
-    
+      <script type="text/javascript">//<![CDATA[ 
 
-    <script type="text/javascript">//<![CDATA[ 
+      google.load('visualization', '1', {packages: ['corechart', 'bar']});
+      google.setOnLoadCallback(drawBasic);
 
-    google.load('visualization', '1', {packages: ['corechart', 'bar']});
-    google.setOnLoadCallback(drawBasic);
+      function drawBasic() {
 
-    function drawBasic() {
+          const tableDict = new Map()
+          var table = null
+          
+          {% for user in data %}
+              
+              console.log("{{ user["user"] }}")
 
-        const tableDict = new Map()
-        var table = null
-        
-        {% for user in data %}
-            
-            console.log("{{ user["user"] }}")
+              myArray = [
+                ['Language', 'Number']
+                {% for filetype in user["files"].keys() %}
+                  , ['{{ filetype }}', {{ user["files"][filetype] }}]
+                {% endfor %}
+              ]
 
-            myArray = [['Language', 'Number']]
+              table = google.visualization.arrayToDataTable(myArray);
 
-            {% for filetype in user["files"].keys() %}
+              tableDict.set("{{ user["user"] }}", table)
 
-                myArray.push(
-                    ['{{ filetype }}', {{ user["files"][filetype] }}]
-                )
+          {% endfor %}
 
-            {% endfor %}
+          // var table = google.visualization.arrayToDataTable([
+          //     ['Language',    'Number'],
+          //     ['Python',      {{ data[0]["files"]["py"] }}],
+          //     ['JavaScript',  {{ data[0]["files"]["js"] }}],
+          //     ['Java',        {{ data[0]["files"]["java"] }}]
+          // ]);
+          
+          // var data = google.visualization.arrayToDataTable([
+          //     ['Currency', 'Rate', { role: 'style' }],
+          //     ['USD', 1.2, 'gold'],
+          //     ['GBP', 0.9, 'silver'],
+          //     ['HKD', 1.5, 'brown'],
+          //     ['AUD', 1.4, 'blue']
+          // ]);
 
-            table = google.visualization.arrayToDataTable(myArray);
+          var options = {
+              height: 500,
+              width: 900,
+              pieHole: 0.4,
+              sliceVisibilityThreshold: .02,
+              pieSliceText: 'label',
+              pieResidueSliceLabel: 'others'
+          };
 
-            // table = google.visualization.arrayToDataTable([
-            //     ['Language',    'Number'],
-            //     ['Python',      {{ user["files"]["py"] }}],
-            //     ['JavaScript',  {{ user["files"]["js"] }}],
-            //     ['Java',        {{ user["files"]["java"] }}]
-            // ]);
+          var name = ""
 
-            tableDict.set("{{ user["user"] }}", table)
+          {% for user in data %}
 
-        {% endfor %}
+              name = "{{ user["user"] }}"
+              console.log(name)
+              var chart{{ user["user"] }} = new google.visualization.PieChart(document.getElementById( name ));
+              chart{{ user["user"] }}.draw(tableDict.get(name), options);
 
-        // var table = google.visualization.arrayToDataTable([
-        //     ['Language',    'Number'],
-        //     ['Python',      {{ data[0]["files"]["py"] }}],
-        //     ['JavaScript',  {{ data[0]["files"]["js"] }}],
-        //     ['Java',        {{ data[0]["files"]["java"] }}]
-        // ]);
-        
-        // var data = google.visualization.arrayToDataTable([
-        //     ['Currency', 'Rate', { role: 'style' }],
-        //     ['USD', 1.2, 'gold'],
-        //     ['GBP', 0.9, 'silver'],
-        //     ['HKD', 1.5, 'brown'],
-        //     ['AUD', 1.4, 'blue']
-        // ]);
+          {% endfor %}
 
-        var options = {
-            height: 500,
-            width: 900,
-            pieHole: 0.4,
-            sliceVisibilityThreshold: .02,
-            pieSliceText: 'label',
-            pieResidueSliceLabel: 'others'
-        };
+          // name = "{{ data[0]["user"] }}"
+          // var chart = new google.visualization.PieChart(document.getElementById( name ));
+          // chart.draw(table, options);
+      }
+      </script>
 
-        var name = ""
+    {% else %}
 
-        {% for user in data %}
+      <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Invalid Repo</h1>
+          <p class="lead">Sorry...</p>
+          <p class="lead">The Github API doesn't allow fetching of contributors for certain repos which have too many contributors, e.g. the "torvalds/linux" repo.</p>
+        </div>
+      </div>
 
-            name = "{{ user["user"] }}"
-            console.log(name)
-            var chart{{ user["user"] }} = new google.visualization.PieChart(document.getElementById( name ));
-            chart{{ user["user"] }}.draw(tableDict.get(name), options);
+    {% endif %}
 
-        {% endfor %}
-
-        // name = "{{ data[0]["user"] }}"
-        // var chart = new google.visualization.PieChart(document.getElementById( name ));
-        // chart.draw(table, options);
-    }
-    </script>
 </body>

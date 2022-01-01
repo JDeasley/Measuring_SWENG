@@ -14,7 +14,12 @@ def fetch_data(repo_name):
     else:
         # 1. Try to fetch data from DB for this repo
         print("Fetching repo: ", repo_name)
-        get_data.fetch(repo_name)
+
+        try:
+            get_data.fetch(repo_name)
+        except Exception as err:
+            raise err
+
         repos_fetched.append(repo_name)
 
         # f = open('data.json')
@@ -29,6 +34,10 @@ def index():
 
 @app.route("/repo/<path:repo_name>")
 def show_repo(repo_name):
-    data = fetch_data(repo_name)
-    first_user = data[0]["user"]
+    try:
+        data = fetch_data(repo_name)
+        first_user = data[0]["user"]
+    except Exception as err:
+        bad_repo = True
+
     return render_template("repo.html", **locals())
