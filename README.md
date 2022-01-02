@@ -2,7 +2,9 @@
 Software Engineering module Measuring Software Engineering project repo.
 
 ## Usage
-Once setup has been completed, usage is as simple as typing in your desired repo to the search bar in the top right corner of the webapp.
+Once setup has been completed and the app started, the app can be found on `localhost:5000` in your web browser.
+
+Usage is as simple as typing in your desired repo to the search bar in the top right corner of the webapp.
 
 ## Setup
 I have made my visualisation through a webapp using Flask, which builds a webapp using Python code.
@@ -14,6 +16,8 @@ To run the webapp, you will need to have installed:
 - pymongo
 
 all of which can be installed within a virtual environment if you wish.
+
+If you already have these installed, you can skip to the [starting the app](#starting-the-app)
 
 I have tried my best to make setup simple through setup scripts:
 
@@ -66,3 +70,5 @@ To start the webapp, you will need to start the database and then the Flask app.
 Before starting the database for the first time, you will need to make a `data` folder in the main directory, i.e. the same directory as the `docker-compose.yml` file.
 
 Then we can use `docker-compose up` to start the database and then `flask run` to start the app.
+
+The app will now be accessible through `localhost:5000` on your web browser.
