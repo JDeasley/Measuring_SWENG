@@ -38,12 +38,12 @@
         <hr>
       </div>
 
-      <div class="container" style="margin-top: 2em; margin-bottom: 2em;">
+      <div class="container" style="margin-top: 2em; margin-bottom: 4em;">
         <h1 class="display-4">
           Measuring Software Engineering
         </h1>
         <hr>
-        <h3 style="margin-bottom: 1em;">
+        <h3 style="margin-top: 1em; margin-bottom: 1em;">
           Do top contributors spread their time across languages, or do they focus in on one language?
         </h3>
         <p>
@@ -55,36 +55,32 @@
           It should be noted that, although the information is fetched and displayed by repository name, 
           the information shown is taken from across <b>all repositories</b> committed to by each of the users.
         </p>
-        <p>
+        <p style="margin-bottom: 2em;">
           The goal with showing this information is to make it apparent if top contributors achieve this level of impact by 
           making use of a lot of different languages with different strengths, or if they prefer to focus in on one language 
           and hone their skills in order to be more impactful in that way.
           Essentially, this is a question of <b>depth vs range</b> of language usage in order to assess which appears to be more impactful. 
         </p>
         <hr>
-        <h3 style="margin-bottom: 1em;">
+        <h3 style="margin-top: 1em; margin-bottom: 1em;">
           Notes on known issues:
         </h3>
         <p>
-          I have had a few issues with larger repos.
-        </p>
-        <p>
-          First of all, the Github API does not allow fetching of contributors in very large repos, 
+          The Github API does not seem to allow fetching of contributors in repos with a very large number of contributors, 
           such as the "torvalds/linux" repo. This prevents me from showing data for the top contributors to repos of that size.
         </p>
         <p>
-          Also, where a repo's top contributors have made a very large colume of commits to different repos, causing long loading times, 
-          the web app does not seem to display the pie charts. However, I can see from logs that the requested data is acquired and passed into charts, 
-          but Google Charts simply do not appear. I would of course like to fix this, but if you are reading this then it is likely I haven't been able to just yet. 
-          In the meantime, I can only recommend trying to visualise smaller repos, unless you are willing to check server logs to see that the data is in fact there.
-        </p>
-        <p>
-          A few public repos which I have tested and can recommend are:
+          A few popular public repos which I have tested and can recommend, along with estimates of how long it takes to load up and visualise their data, are:
             <ul>
-              <li>twbs/bootstrap</li>
+              <li>twbs/bootstrap - 4 mins 20 secs</li>
               <li>d3/d3 - 1 min 30 secs</li>
               <li>facebook/react - 3 mins 15 secs</li>
               <li>python/cpython - 4 mins 45 secs</li>
+              <li>microsoft/vscode - 7 mins 50 secs
+                <ul>
+                  <li>(I realise this one is a very long wait, but the results have information for all of the top 5 contirbutors and are quite interesting, which is why I have included it here)</li>
+                </ul>
+              </li>
             </ul>
         </p>
       </div>
