@@ -9,10 +9,10 @@ cleardb.main()
 
 def fetch_data(repo_name):
     if repo_name in repos_fetched:
-        print("Already fetched repo: ", repo_name)
+        print("\nAlready fetched repo: ", repo_name)
     else:
         # 1. Try to fetch data from DB for this repo
-        print("Fetching repo: ", repo_name)
+        print("\nFetching data of users from repo: ", repo_name)
 
         try:
             get_data.fetch(repo_name)
