@@ -54,6 +54,7 @@ def get_users_commits(user):
     events = user.get_events()
 
     commits = defaultdict(list)
+    count = 0
 
     # For each event, get repo ID and commit IDs (SHAs)
     for event in events:
@@ -65,6 +66,7 @@ def get_users_commits(user):
                     sha = commit.get("sha")
                     # print(f"Found commit {sha} in repo {repo_id}")
                     commits[repo_id].append(sha)
+                    count += 1
             
             except Exception as err:
                 raise err
@@ -72,13 +74,14 @@ def get_users_commits(user):
             continue
 
     # Should now have a dict of repo IDs and the commits the user made to each of those repos
+    print("\n*",user.login, "- Total commits:", count)
     return commits
 
 def get_user_file_count(user):
     commits = get_users_commits(user)
     file_count = defaultdict(int)
 
-    print("\nGetting files committed by user", user.login, "to repos:")
+    print("To repos:")
 
     for repo_id in commits.keys():
         try:
@@ -107,7 +110,7 @@ def get_user_file_count(user):
 
 
 def fetch(repo_name="JDeasley/Measuring_SWENG_Visualisation"):
-    print("Starting 'fetch' function...")#
+    # print("Starting 'fetch' function...")
 
     try:
         top_cons = get_top_contributors(repo_name)
