@@ -8,64 +8,99 @@
 
         let repo = document.getElementById("repoSearch").value
         let new_url = '{{ url_for('show_repo', repo_name=repo) }}'.concat(repo)
-        document.getElementById("loader").removeAttribute("hidden")
+        document.getElementById("loading").removeAttribute("hidden")
         window.location.href = new_url
-        document.getElementById("loader").setAttribute("hidden")
+        document.getElementById("loading").setAttribute("hidden")
       }
     </script>
     
     <title>Repo: {{ repo_name }}</title>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light" style="background-color: #d8d8d8;">
         <div class="container-fluid">
-          <a class="navbar-brand">Repo: {{ repo_name }}</a>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href={{ home_url }}>Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Repo : <b>{{ repo_name }}</b></li>
+          </ol>
           <form class="d-flex" id="form" onsubmit="return getRepo()">
             <input class="form-control me-2" type="text" placeholder="Search Repo" aria-label="Search" id="repoSearch" value="">
             <button class="btn btn-outline-success" type="submit">Search</button>
           </form>
         </div>
-        <div class="spinner-border" id="loader" hidden></div>
       </nav>
 
-    <!-- <h1>Repo: {{ repo_name }}</h1> -->
+      <div id="loading" hidden>
+        <div class="d-flex justify-content-center" style="margin-top: 4em;">
+          <div id="loader" class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+        </div>
+        <p id="load_text" style="text-align: center; margin-top: 1em;">Loading...</p>
+        <p id="load_text" style="text-align: center; margin-top: 1em;">This may take a few minutes, depending on the number of contributors to the repo and the number of commits that each user has made to all repos.</p>
+        <hr>
+      </div>
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-    {% if not bad_repo %}
+    {% if not error %}
 
-      {% for user in data %}
-          <a href="/">
-              {{ user["user"] }}
-          </a><br/>
-      {% endfor %}
+      <div class="container-fluid">
+        <div class="row" style="margin-top: 2em;">
+          <div class="col-sm-2" style="margin-top: 2em;">
+            <p>
+              Jump to user:
+            </p>
 
-      <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-              {% for user in data %}
-                  {% if user["user"] == first_user %}
-                      <div class="carousel-item active">
-                          <p>Language usage by user: {{ user["user"] }}</p>
-                          <div id={{ user["user"] }} style="width: 900px; height: 500px;">
-                          </div>
-                      </div>
-                  {% else %}
-                      <div class="carousel-item">
-                          <p>Language usage by user: {{ user["user"] }}</p>
-                          <div id={{ user["user"] }} style="width: 900px; height: 500px;">
-                          </div>
-                      </div>
-                  {% endif %}
-              {% endfor %}
+            <div class="btn-group-vertical" role="group" aria-label="Basic example">
+            {% for user in data %}
+              <button type="button" class="btn btn-outline-success" data-bs-target="#carouselExampleControls" data-bs-slide-to={{ loop.index0 }}>{{ user["user"] }}</button>
+            {% endfor %}
+            </div>
+
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
+          <div class="col-lg-10">
+
+            <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                
+              <ol class="carousel-indicators">
+              {% for user in data %}
+                {% if loop.first %}
+                  <li data-bs-target="#carouselExampleControls" data-bs-slide-to={{ loop.index0 }} class="active"></li>
+                {% else %}
+                  <li data-bs-target="#carouselExampleControls" data-bs-slide-to={{ loop.index0 }}></li>
+                {% endif %}
+              {% endfor %}
+              </ol>
+
+              <div class="carousel-inner">
+                    {% for user in data %}
+                        {% if loop.first %}
+                            <div class="carousel-item active">
+                                <p style="text-align: center;">Language usage by user: <b>{{ user["user"] }}</b></p>
+                                <p id=not{{ user["user"] }} style="text-align: center;">___</p>
+                                <div id={{ user["user"] }} style="width: 900px; height: 500px; display: block; margin: 0 auto;">
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="carousel-item">
+                                <p style="text-align: center;">Language usage by user: <b>{{ user["user"] }}</b></p>
+                                <p id=not{{ user["user"] }} style="text-align: center;">___</p>
+                                <div id={{ user["user"] }} style="width: 900px; height: 500px; display: block; margin: 0 auto;">
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <script type="text/javascript">//<![CDATA[ 
@@ -95,21 +130,6 @@
 
           {% endfor %}
 
-          // var table = google.visualization.arrayToDataTable([
-          //     ['Language',    'Number'],
-          //     ['Python',      {{ data[0]["files"]["py"] }}],
-          //     ['JavaScript',  {{ data[0]["files"]["js"] }}],
-          //     ['Java',        {{ data[0]["files"]["java"] }}]
-          // ]);
-          
-          // var data = google.visualization.arrayToDataTable([
-          //     ['Currency', 'Rate', { role: 'style' }],
-          //     ['USD', 1.2, 'gold'],
-          //     ['GBP', 0.9, 'silver'],
-          //     ['HKD', 1.5, 'brown'],
-          //     ['AUD', 1.4, 'blue']
-          // ]);
-
           var options = {
               height: 500,
               width: 900,
@@ -124,15 +144,17 @@
           {% for user in data %}
 
               name = "{{ user["user"] }}"
-              console.log(name)
-              var chart{{ user["user"] }} = new google.visualization.PieChart(document.getElementById( name ));
-              chart{{ user["user"] }}.draw(tableDict.get(name), options);
+              notname = "not".concat("{{ user["user"] }}")
+              
+              if(tableDict.get(name).getNumberOfRows() == 0){
+                document.getElementById(notname).textContent = "No data available from last 90 days."
+              }
+              else{
+                var chart{{ user["user"] }} = new google.visualization.PieChart(document.getElementById( name ));
+                chart{{ user["user"] }}.draw(tableDict.get(name), options);    
+              }
 
           {% endfor %}
-
-          // name = "{{ data[0]["user"] }}"
-          // var chart = new google.visualization.PieChart(document.getElementById( name ));
-          // chart.draw(table, options);
       }
       </script>
 
@@ -140,9 +162,15 @@
 
       <div class="jumbotron jumbotron-fluid">
         <div class="container">
-          <h1 class="display-4">Invalid Repo</h1>
-          <p class="lead">Sorry...</p>
-          <p class="lead">The Github API doesn't allow fetching of contributors for certain repos which have too many contributors, e.g. the "torvalds/linux" repo.</p>
+          <h1 class="display-4" style="margin-top: 1em;">Error</h1>
+          <hr>
+          <!--
+            <p class="lead">Sorry...</p>
+            <p class="lead">The Github API doesn't allow fetching of contributors for certain repos which have too many contributors, e.g. the "torvalds/linux" repo.</p>
+          -->
+          <p class="lead">
+            {{ message }}  
+          </p>
         </div>
       </div>
 
