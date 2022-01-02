@@ -36,7 +36,7 @@ def show_repo(repo_name):
     except Exception as err:
         error = True
         message = err
-        print(err.with_traceback)
+        print(err)
 
     home_url = url_for('index')
 
