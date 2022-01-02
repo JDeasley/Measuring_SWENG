@@ -2,14 +2,10 @@ from github import Github
 import os
 import pymongo
 
-from faker import Faker
 from collections import defaultdict
-faker = Faker()
-fake = defaultdict(faker.name)
 
 token = os.getenv('GITHUB_PAT')
 g = Github(token)
-# usr = None
 
 conn = "mongodb://localhost:27017"
 client = pymongo.MongoClient(conn)
@@ -19,14 +15,6 @@ db = client.classDB
 not_useful_extensions = ["class", "md", "png", "PNG", "jpg", "JPG", "jpeg", "svg", "gif", "ico"]
 users_fetched = []
 
-# def get_user():
-#     try:
-#         usr = g.get_user()
-#     except Exception:
-#         usr = None
-
-#     return usr
-
 def get_named_user(name):
     try:
         usr = g.get_user(name)
@@ -35,25 +23,6 @@ def get_named_user(name):
 
     return usr
 
-# def create_user_dict(user):
-#     try:
-#         dct = {
-#             'user':         fake[user.login].replace(" ",""),
-#             'fullname':     fake[user.name],
-#             'location':     user.location,
-#             'company':      user.company,
-#             'public_repos': user.public_repos
-#         }
-
-#         for k, v in dict(dct).items():
-#             if v is None:
-#                 del dct[k]
-    
-#     except Exception:
-#         dct = None
-
-#     return dct
-
 def get_named_repo(repo_name):
     try:
         repo = g.get_repo(repo_name)
@@ -61,25 +30,6 @@ def get_named_repo(repo_name):
         repo = None
 
     return repo
-
-# def create_repo_dict(repo):
-#     try:
-#         dct = {
-#             'name':         repo.name,
-#             'owner':        fake[repo.owner.login].replace(" ",""),
-#             'description':  repo.description,
-#             'stars':        repo.stargazers_count,
-#             'forks':        repo.forks_count,
-#         }
-
-#         for k, v in dict(dct).items():
-#             if v is None:
-#                 del dct[k]
-    
-#     except Exception:
-#         dct = None
-
-#     return dct
 
 def get_top_contributors(repo_name):
     repo = get_named_repo(repo_name)
@@ -156,15 +106,13 @@ def get_user_file_count(user):
     return file_count
 
 
-def fetch(repo_name="folafifo/Group8OAC"):
-    # repo_name = "folafifo/Group8OAC"
+def fetch(repo_name="JDeasley/Measuring_SWENG_Visualisation"):
     print("Starting 'fetch' function...")#
 
     try:
         top_cons = get_top_contributors(repo_name)
     except Exception as err:
         raise err
-    # file_counts = defaultdict(list)
 
     for c in top_cons:
 
