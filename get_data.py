@@ -87,16 +87,16 @@ def get_top_contributors(repo_name):
     
     try:
         contributors = repo.get_contributors()
+        print("Top 5 contributors:")
 
         for c in contributors:
             print(c.login)
             c_list.append(c)
-            if len(c_list) >= 10:
+            if len(c_list) >= 5:
                 break
     
-    except Exception:
-        print("List of contirbutors too large for API...")
-        return []
+    except Exception as err:
+        raise err
 
     return c_list
 
@@ -116,9 +116,8 @@ def get_users_commits(user):
                     # print(f"Found commit {sha} in repo {repo_id}")
                     commits[repo_id].append(sha)
             
-            except Exception:
-                # print("No commits in this event")
-                continue
+            except Exception as err:
+                raise err
         else:
             continue
 
@@ -128,6 +127,8 @@ def get_users_commits(user):
 def get_user_file_count(user):
     commits = get_users_commits(user)
     file_count = defaultdict(int)
+
+    print("\nGetting files committed by user", user.login, "to repos:")
 
     for repo_id in commits.keys():
         try:

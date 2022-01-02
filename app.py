@@ -1,6 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 import os
-import json
 import get_data, cleardb, read_data
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -22,9 +21,6 @@ def fetch_data(repo_name):
 
         repos_fetched.append(repo_name)
 
-        # f = open('data.json')
-        # rdata = json.load(f)
-
     rdata = read_data.db_fetch(repo_name)
     return rdata
 
@@ -38,6 +34,10 @@ def show_repo(repo_name):
         data = fetch_data(repo_name)
         first_user = data[0]["user"]
     except Exception as err:
-        bad_repo = True
+        error = True
+        message = err
+        print(err.with_traceback)
+
+    home_url = url_for('index')
 
     return render_template("repo.html", **locals())
