@@ -18,28 +18,27 @@
 </head>
 <body>
     <nav class="navbar navbar-light" style="background-color: #d8d8d8;">
-        <div class="container-fluid">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href={{ home_url }}>Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Repo : <b>{{ repo_name }}</b></li>
-          </ol>
-          <form class="d-flex" id="form" onsubmit="return getRepo()">
-            <input class="form-control me-2" type="text" placeholder="Search Repo" aria-label="Search" id="repoSearch" value="">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
-
-      <div id="loading" hidden>
-        <div class="d-flex justify-content-center" style="margin-top: 4em;">
-          <div id="loader" class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
-        </div>
-        <p id="load_text" style="text-align: center; margin-top: 1em;">Loading...</p>
-        <p id="load_text" style="text-align: center; margin-top: 1em;">This may take a few minutes, depending on the number of contributors to the repo and the number of commits that each user has made to all repos.</p>
-        <hr>
+      <div class="container-fluid">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href={{ home_url }}>Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Repo : <b>{{ repo_name }}</b></li>
+        </ol>
+        <form class="d-flex" id="form" onsubmit="return getRepo()">
+          <input class="form-control me-2" type="text" placeholder="Search Repo" aria-label="Search" id="repoSearch" value="">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
       </div>
+    </nav>
 
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <div id="loading" hidden>
+      <div class="d-flex justify-content-center" style="margin-top: 4em;">
+        <div id="loader" class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+      </div>
+      <p id="load_text" style="text-align: center; margin-top: 1em;">Loading...</p>
+      <p id="load_text" style="text-align: center; margin-top: 1em;">This may take a few minutes, depending on the number of contributors to the repo and the number of commits that each user has made to all repos.</p>
+      <hr>
+    </div>
+
 
     {% if not error %}
 
@@ -103,30 +102,30 @@
         </div>
       </div>
 
+      <script type="text/javascript" src="https://www.google.com/jsapi"></script>
       <script type="text/javascript">//<![CDATA[ 
 
       google.load('visualization', '1', {packages: ['corechart', 'bar']});
-      google.setOnLoadCallback(drawBasic);
 
       function drawBasic() {
 
-          const tableDict = new Map()
-          var table = null
+          const tableDict = new Map();
+          var table = null;
           
           {% for user in data %}
               
-              console.log("{{ user["user"] }}")
+              console.log("{{ user["user"] }}");
 
               myArray = [
                 ['Language', 'Number']
                 {% for filetype in user["files"].keys() %}
                   , ['{{ filetype }}', {{ user["files"][filetype] }}]
                 {% endfor %}
-              ]
+              ];
 
               table = google.visualization.arrayToDataTable(myArray);
 
-              tableDict.set("{{ user["user"] }}", table)
+              tableDict.set("{{ user["user"] }}", table);
 
           {% endfor %}
 
@@ -139,23 +138,33 @@
               pieResidueSliceLabel: 'others'
           };
 
-          var name = ""
+          var name = "";
 
           {% for user in data %}
 
-              name = "{{ user["user"] }}"
-              notname = "not".concat("{{ user["user"] }}")
+          try {
+            name = "{{ user["user"] }}";
+            notname = "not".concat("{{ user["user"] }}");
+            
+            if(tableDict.get(name).getNumberOfRows() == 0){
+              document.getElementById(notname).textContent = "No data available from last 90 days.";
+            }
+            else{
+              var chart{{ user["user"].replace("-","") }} = new google.visualization.PieChart(document.getElementById( name ));
+              chart{{ user["user"].replace("-","") }}.draw(tableDict.get(name), options);    
+            }
+          } catch (error) {
+            console.log(error);
+            console.error(error);
+            throw error;
+          }
+
               
-              if(tableDict.get(name).getNumberOfRows() == 0){
-                document.getElementById(notname).textContent = "No data available from last 90 days."
-              }
-              else{
-                var chart{{ user["user"] }} = new google.visualization.PieChart(document.getElementById( name ));
-                chart{{ user["user"] }}.draw(tableDict.get(name), options);    
-              }
 
           {% endfor %}
       }
+
+      google.setOnLoadCallback(drawBasic);
       </script>
 
     {% else %}
