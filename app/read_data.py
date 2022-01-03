@@ -6,7 +6,7 @@ from get_data import get_top_contributors
 # Getting the user object from the db
 
 # Establish connection
-conn = "mongodb://localhost:27017"
+conn = "mongodb://mongo:27017"
 client = pymongo.MongoClient(conn)
 
 # Create a database

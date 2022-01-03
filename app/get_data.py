@@ -7,7 +7,7 @@ from collections import defaultdict
 token = os.getenv('GITHUB_PAT')
 g = Github(token)
 
-conn = "mongodb://localhost:27017"
+conn = "mongodb://mongo:27017"
 client = pymongo.MongoClient(conn)
 
 db = client.classDB

@@ -41,3 +41,6 @@ def show_repo(repo_name):
     home_url = url_for('index')
 
     return render_template("repo.html", **locals())
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')

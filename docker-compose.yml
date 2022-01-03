@@ -10,4 +10,17 @@ services:
      - ./data:/data/db    # need to modify this
     ports:
       - 27017:27017
+    expose:
+      - "27017"
     restart: unless-stopped
+
+  app:
+    build: ./app
+    env_file:
+      - .env
+    links:
+      - mongodb:mongo
+    depends_on:
+      - mongodb
+    ports:
+      - "5000:5000"
