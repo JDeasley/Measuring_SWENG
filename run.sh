@@ -10,7 +10,7 @@ check_files()
     echo ".env file exists."
     else
         echo ".env file does not exist."
-        echo "Please create a .env file in the base directory with a Github API access token with the variable name 'GITHUB_PAT'."
+        # echo "Please create a .env file in the base directory with a Github API access token with the variable name 'GITHUB_PAT'."
         RET=1
     fi
 
@@ -20,7 +20,7 @@ check_files()
         echo "data directory exists."
     else
         echo "data directory does not exist."
-        echo "Please create a directory named 'data' in the base directory."
+        # echo "Please create an empty directory named 'data' in the base directory."
         RET=1
     fi
 
@@ -35,5 +35,7 @@ if check_files; then
     docker-compose up
 else
     echo "Files not found."
-    echo "Please create a '.env' file and a 'data' directory as outlined above, then retry this 'run' script."
+    # echo "Please create a '.env' file and a 'data' directory as outlined above, then retry this 'run' script."
+    ./setup.sh
+    docker-compose up
 fi

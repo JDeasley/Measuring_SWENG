@@ -1,6 +1,9 @@
 # Measuring_SWENG
 Software Engineering module Measuring Software Engineering project repo.
 
+## Dependencies
+- Docker and Docker-Compose
+
 ## Usage
 Once setup has been completed and the app started, the app can be found on `localhost:5000` in your web browser.
 
