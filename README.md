@@ -2,7 +2,15 @@
 Software Engineering module Measuring Software Engineering project repo.
 
 ## Dependencies
-- Docker and Docker-Compose
+On your machine, to run the Docker containers which run the app, you will need:
+- Docker (and Docker-Compose)
+
+Other dependencies, which you need not worry about as they are handled by Docker, are as follows:
+- Python (and pip)
+- Flask
+- PyGithub
+- pymongo
+
 
 ## Usage
 Once setup has been completed and the app started, the app can be found on `localhost:5000` in your web browser.
@@ -21,11 +29,18 @@ I realise some of these are quite long waits, but generally speaking, smaller re
 
 ## Setup
 
-(__Note:__ The setup instructions below can all be executed automatically by running the `run.sh` script.)
+(__Note:__ The setup instructions below can all be executed automatically by running the `run.sh` script, however there are only 3 steps, so I would recommend doing it manually to ensure no errors can come from running shell scripts, as I am not very well-versed in writing shell scripts.)
 
-First you will need to create an empty `data` directory for the mongo database to work from, and also create a `.env` file containing a Github API key with the name `GITHUB_PAT`. Both of these should be created in the same directory as the docker-compose file.
+Within the same directory as the 'docker-compose.yml' file:
 
-After this, the application and database are fully Dockerized, so all you'll need to do is `docker-compose up` from the directory containing the `docker-compose` file. Wait a few seconds and the app will appear on `localhost:5000`.
+1. Create a `.env` file containing a Github API key with the name `GITHUB_PAT`.
+2. Create an empty `data` directory for the mongo database to work from.
+
+After this, the application and database are fully Dockerized, so all you'll need to do is: 
+
+3. Enter the command `docker-compose up` from the directory containing the `docker-compose` file.
+
+Wait a few seconds and the app will appear on `localhost:5000`.
 
 ## Images
 
