@@ -20,3 +20,21 @@ I realise some of these are quite long waits, but generally speaking, smaller re
 First you will need to create an empty `data` directory for the mongo database to work from, and also create a `.env` file containing a Github API key with the name `GITHUB_PAT`. Both of these should be created in the same directory as the docker-compose file.
 
 After this, the application and database are fully Dockerized, so all you'll need to do is `docker-compose up` from the directory containing the `docker-compose` file. Wait a few seconds and the app will appear on `localhost:5000`.
+
+## Images
+
+When you first open the app on localhost:5000, you will see the __home page__ with a short description of the project as well as a search bar for choosing a repo to visualise data for.
+
+![Home page](./images/home.png)
+
+----
+
+You can then use the search bar in the top right to enter the name of a repo of your choosing, e.g. JDeasley/Measuring_SWENG_Visualisation or d3/d3, and you will then (after a bit of loading) be taken to a __visualisation__ for that repo.
+
+![First repo](./images/repo1.png)
+
+----
+
+The gif below demonstrates usage of the app.
+
+![Gif](./images/gif1.gif)
