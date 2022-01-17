@@ -20,6 +20,9 @@ Loading times can range from as little as a few seconds up to several minutes de
 I realise some of these are quite long waits, but generally speaking, smaller repos are reasonable, considering the data is being loaded on the fly.
 
 ## Setup
+
+(__Note:__ The setup instructions below can all be executed automatically by running the `run.sh` script.)
+
 First you will need to create an empty `data` directory for the mongo database to work from, and also create a `.env` file containing a Github API key with the name `GITHUB_PAT`. Both of these should be created in the same directory as the docker-compose file.
 
 After this, the application and database are fully Dockerized, so all you'll need to do is `docker-compose up` from the directory containing the `docker-compose` file. Wait a few seconds and the app will appear on `localhost:5000`.
